@@ -390,17 +390,18 @@ int main(int argc, char *argv[])
             config0.n_ivps_fps = s_sample_framerate;
             config0.n_ivps_width = 1920;
             config0.n_ivps_height = 1080;
-            config0.n_osd_rgn = 1; // osd rgn 的个数，一个rgn可以osd 32个目标
+            config0.n_osd_rgn = 1; // osd rgn 的个数（最多五个），一个rgn可以osd 32个目标，现在用的是自定义的rgba画布，所以指挥占用一个rgn里的一个目标，所以这里只创建一个
         }
         pipe0.enable = 1;
         pipe0.pipeid = 0x90015;
         pipe0.m_input_type = pi_vin;
-        pipe0.m_output_type = po_rtsp_h265;
+        pipe0.m_output_type = po_rtsp_h265; //可以创建265，降低带宽压力
         pipe0.n_loog_exit = 0; // 可以用来控制线程退出（如果有的话）
         pipe0.n_vin_pipe = 0;
         pipe0.n_vin_chn = 0;
         sprintf(pipe0.m_venc_attr.end_point, "axstream0"); // 重复的会创建失败
         pipe0.m_venc_attr.n_venc_chn = 0;                  // 重复的会创建失败
+       // create_pipeline(&pipe2);
 
         pipeline_t &pipe1 = pipelines[1];
         {
@@ -447,22 +448,23 @@ int main(int argc, char *argv[])
         {
             pipeline_ivps_config_t &config2 = pipe2.m_ivps_attr;
             config2.n_ivps_grp = 2;    // 重复的会创建失败
-            config2.n_ivps_rotate = 1; // 爱芯派的屏幕是竖着的，所以需要旋转90度
-            config2.n_ivps_fps = 60;   // 爱芯派的屏幕必须要60fps，分辨率也必须为854*480
+            config2.n_ivps_fps = 60;   // 屏幕只能是60gps
+            config2.n_ivps_rotate = 3; // 旋转
             config2.n_ivps_width = 854;
             config2.n_ivps_height = 480;
-            config2.n_osd_rgn = 1;
+            config2.n_osd_rgn = 1; // osd rgn 的个数，一个rgn可以osd 32个目标
         }
         pipe2.enable = 1;
-        pipe2.pipeid = 0x90017; // 重复的会创建失败
+        pipe2.pipeid = 0x90017;         // 重复的会创建失败
         pipe2.m_input_type = pi_vin;
         pipe2.m_output_type = po_vo_sipeed_maix3_screen;
-        pipe2.n_loog_exit = 0;
+        pipe2.n_loog_exit = 0; // 可以用来控制线程退出（如果有的话）
         pipe2.n_vin_pipe = 0;
         pipe2.n_vin_chn = 0;
 
         for (size_t i = 0; i < pipe_count; i++)
         {
+            
             create_pipeline(&pipelines[i]);
             if (pipelines[i].m_ivps_attr.n_osd_rgn > 0)
             {
@@ -482,6 +484,7 @@ int main(int argc, char *argv[])
         ALOGE("SysRun error,s32Ret:0x%x\n", s32Ret);
         goto EXIT_6;
     }
+    gLoopExit = 1;
 
     // 销毁pipeline
     {

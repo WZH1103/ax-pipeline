@@ -1,4 +1,4 @@
-set(SampleName sample_v4l2_ivps_joint_vo)
+set(SampleName my_proj)
 
 # opencv
 set(OpenCV_DIR ${CMAKE_SOURCE_DIR}/3rdparty/opencv-arm-linux/lib/cmake/opencv4)
@@ -31,19 +31,15 @@ function(targetlink name)
 
     # rtsp
     target_include_directories(${name} PRIVATE ../rtsp/inc)
-
-    target_include_directories(${name} PRIVATE ./libv4l2cpp/inc)
 endfunction()
 
 file(GLOB SRC_BASE_LIST "*.cpp" "../utilities/*.c")
 file(GLOB SRC_LIST_COMMON "../common/common_func.c" "../common/common_joint.c" "../common/common_pipeline/*.cpp" "${BSP_MSP_DIR}/../sample/common/*.c" "${BSP_MSP_DIR}/../sample/common/common_codec/*.c" "${BSP_MSP_DIR}/../sample/common/vo/*.c")
 file(GLOB SRC_LIST_RTSP "../rtsp/src/*.c")
-file(GLOB SRC_LIST_V4L2 "./libv4l2cpp/src/*.cpp")
 list(APPEND SRC_BASE_LIST
     ${SRC_LIST}
     ${SRC_LIST_COMMON}
     ${SRC_LIST_RTSP}
-    ${SRC_LIST_V4L2}
 )
 
 add_executable(${SampleName}
