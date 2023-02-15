@@ -79,3 +79,9 @@ install
     │   └── yolox.json
     └── my_proj
 ```
+6、若需要编译其他多个工程，需要将工程文件夹复制到example文件夹中，修改ax-pipeline文件夹中的CMakeLists.txt文档,仿照文档内容,找到并添加工程路径(假设新的工程文件夹为new_proj),按照步骤4重新创建cmake编译任务
+```
+add_subdirectory(examples/new_proj)
+```
+
+
