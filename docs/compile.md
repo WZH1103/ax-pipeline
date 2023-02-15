@@ -20,30 +20,34 @@ ax-pipeline 的源码编译目前有两种实现路径：
 - 如果单独某一部分的命令出错，请及时在技术交流 QQ 群反馈，QQ 群:139953715
 - 反馈时请清楚的描述遇到的问题以及错误
 
-1、git clone 下载源码，进入 ax-pipeline 根目录
+1、git clone 下载源码和子模块,进入文件夹
+```shell
+git clone https://github.com/WZH1103/ax-pipeline.git --recursive
 
-```shell
-git clone https://github.com/AXERA-TECH/ax-pipeline.git
-cd ax-pipeline
+cd ax-pipeline/
 ```
-2、下载子模块（主要是 [axpi_bsp_sdk](https://github.com/sipeed/axpi_bsp_sdk) 部分，如果已经单独下载，可直接放到本目录下，并跳过本步骤）
-```shell
-git submodule update --init
-```
-3、创建 3rdparty，下载opencv
+2、创建 3rdparty，下载opencv
 ```shell
 mkdir 3rdparty
 cd 3rdparty
 wget https://github.com/AXERA-TECH/ax-samples/releases/download/v0.1/opencv-arm-linux-gnueabihf-gcc-7.5.0.zip
 unzip opencv-arm-linux-gnueabihf-gcc-7.5.0.zip
 ```
-4、下载并配置交叉编译工具链（如果已经配置并确定可用，这一部分可以跳过）
+3、下载并配置交叉编译工具链（如果已经配置并确定可用，这一部分可以跳过）
 ```shell
+# 下载工具链
 wget http://releases.linaro.org/components/toolchain/binaries/7.5-2019.12/arm-linux-gnueabihf/gcc-linaro-7.5.0-2019.12-x86_64_arm-linux-gnueabihf.tar.xz
-tar -xvf gcc-linaro-7.5.0-2019.12-x86_64_arm-linux-gnueabihf.tar.xz
-export PATH=$PATH:$PWD/gcc-linaro-7.5.0-2019.12-x86_64_arm-linux-gnueabihf/bin/
+
+# 解压工具链到opt文件夹中
+sudo tar -Jxvf gcc-linaro-7.5.0-2019.12-x86_64_arm-linux-gnueabihf.tar.xz -C /opt/
+
+# 修改环境变量
+sudo gedit /etc/profile
+
+# 将下面内容保存到文件最后一行并重启系统
+export PATH=$PATH:/opt/gcc-linaro-7.5.0-2019.12-x86_64_arm-linux-gnueabihf/bin
 ```
-5、创建 build 目录，并创建 cmake 编译任务
+4、创建 build 目录，并创建 cmake 编译任务
 ```shell
 cd ..
 mkdir build
@@ -53,7 +57,7 @@ make -j8
 make install
 ```
 
-6、编译完成后，生成的可执行示例存放在 `ax-pipeline/build/install/bin/` 路径下：
+5、编译完成后，生成的可执行示例存放在 `ax-pipeline/build/install/bin/` 路径下：
 
 ```shell
 ax-pipeline/build$ tree install
@@ -73,9 +77,5 @@ install
     │   ├── yolov5s_face.json
     │   ├── yolov7.json
     │   └── yolox.json
-    ├── sample_npucv_warp
-    ├── sample_vin_ivps_joint_venc_rtsp
-    ├── sample_vin_ivps_joint_venc_rtsp_vo
-    ├── sample_vin_ivps_joint_vo
-    └── sample_vin_joint
+    └── my_proj
 ```
